@@ -174,9 +174,16 @@ int height(Node *root)
 { 
 	// your code goes here  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// ---<SNIP>----
-
+	
+	// if the root is empty OR the root has no children then we are done
+	if((NULL == root) || ((NULL == root->leftChild) && (NULL == root->rightChild)))
+	{
+		return 0;
+	}
+	// Otherwise we recurse the left side and then the right side and get the max height
+	return(intmax(height(root->leftChild), height(root->rightChild)) + 1);
 	// ---<SNIP>----
-	return -1;   // <<<  Remove this !!!
+	// return -1;   // <<<  Remove this !!!
 }//height()
 
 
