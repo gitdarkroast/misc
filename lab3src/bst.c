@@ -193,9 +193,37 @@ Node *findParentHelper (Key k, Node *root)
 {
 	// your code goes here  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// ---<SNIP>----
+    if(NULL == root)
+    {
+        return root;
+    }
+    if(k < root->key)
+    {
+        // Make sure a left child exists and if so check the key
+        // if it matches we have the parent!
+        if((NULL != root->leftChild) && (k == root->leftChild->key))
+        {
+            return root;
+        }
+        // Otherwise we recurse down the left side - this is why 
+        // we checked if k was less than the key
+        return findParentHelper(k, root->leftChild);
+    }
 
+    if(k > root->key)
+    {
+        // Make sure a right child exists and if so check the key
+        // if it matches we have the parent!
+        if((NULL != root->rightChild) && (k == root->rightChild->key))
+        {
+            return root;
+        }
+        // Otherwise we recurse down the right side - this is why 
+        // we checked if k was greater than the key
+        return findParentHelper(k, root->rightChild);
+    }
 	// ---<SNIP>----
-	return NULL;  // <<<< Remove this !!
+	// return NULL;  // <<<< Remove this !!
 }//findparenthelper()
 
 
@@ -223,6 +251,26 @@ void delete (Node* p, Node *n)
 {
 	// your code goes here  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// ---<SNIP>----
+    // Node (n) to be removed has no children
+    if((NULL == n->leftChild) && (NULL == n->rightChild))
+    {
+        // was n left or right child of p
+        // Need to update parent to point to NULL
+        if(p->leftChild->key == n->key)
+        {
+            p->leftChild = NULL;
+        }
+        else
+        {
+            p->rightChild = NULL;
+        }
+        // delete trhe node
+        free(n);
+    }
+    else if(NULL == n->leftChild)
+    {
+        // single node is on the right side
+    }
 
 
 	// ---<SNIP>----
