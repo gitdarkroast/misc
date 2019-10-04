@@ -29,6 +29,7 @@ Node *initNode (Key k, void *v)
 }//initNode()
 
 
+/*
 Tree *initTree(Key k, void *v)
 // Set up new tree. Allocates memory for Tree structure, then
 // calls initNode() to allocate first node.
@@ -38,7 +39,16 @@ Tree *initTree(Key k, void *v)
 		t->root = initNode(k,v);
 	return t;
 }//initTree()
-
+*/
+Tree *initTree()
+// Set up new tree. Allocates memory for Tree structure.  Initially
+// it is an empty tree - no nodes
+{
+	Tree* t = malloc(sizeof(Tree));
+    // for this excercise we assume no memory allocation
+    // issue.  Otherwise we should check if t is valid.
+	return t;
+}//initTree()
 
 void printTreeExplanation (void)
 // Prints hint to reader what to expect on screen

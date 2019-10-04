@@ -29,7 +29,8 @@ Node *initNode (Key k, void *v);
 
 // Create new tree by creating new node with key = k and value = v
 // and making it root 
-Tree *initTree (Key k, void *v);
+// Tree *initTree (Key k, void *v);
+Tree *initTree ();
 
 // Find node with key k in tree. Returns pointer to Node if found;
 // Returns NULL if not found

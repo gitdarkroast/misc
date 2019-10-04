@@ -23,10 +23,11 @@ int main(void)
 {
 	Node	*n = NULL;		// eliminates compiler warning
 	int v1 = 1;
-	Tree *t = initTree (10,&v1);
+	// Tree *t = initTree (10,&v1);
+	Tree *t = initTree ();
 	// Note: This implementation requires that tree be initialized with first
 	// node.
-	//insert(10,&v1,t->root);
+	insert(10,&v1,t->root);
 	
 	insert(3,&v1,t->root);
 	insert(1,&v1,t->root);
