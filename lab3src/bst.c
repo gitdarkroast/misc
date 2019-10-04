@@ -251,27 +251,62 @@ void delete (Node* p, Node *n)
 {
 	// your code goes here  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// ---<SNIP>----
-    // Node (n) to be removed has no children
+    // We have parent p and node n.  What we need to know is if n is the left child
+    // or the right child.
+    int isRightChild = 0;    // assume it is left
+    if(p->rightChild->key == n->key)
+    {
+        isRightChild = 1;
+    }
+    // Case #1: Node to delete has no children
     if((NULL == n->leftChild) && (NULL == n->rightChild))
     {
-        // was n left or right child of p
+        printf("Node to delete has no children.\n");
         // Need to update parent to point to NULL
-        if(p->leftChild->key == n->key)
-        {
-            p->leftChild = NULL;
-        }
-        else
+        if(isRightChild)
         {
             p->rightChild = NULL;
         }
+        else
+        {
+            p->leftChild = NULL;
+        }
         // delete trhe node
         free(n);
-    }
+    } // Case 2a: Node to delete has one child on the right
     else if(NULL == n->leftChild)
     {
-        // single node is on the right side
-    }
+        printf("Node to delete has one child on the right.\n");
+        // Node to delete has one child on the right
+        if(isRightChild)
+        {
+            p->rightChild = n->rightChild;
+        }
+        else
+        {
+            p->leftChild = n->rightChild;
+        }
+        free(n);
+    } // Case 2b: Node to delete has one child on the left
+    else if(NULL == n->rightChild)
+    {
+        printf("Node to delete has one child on the left.\n");
+        // Node to delete has one child on the left
+        if(isRightChild)
+        {
+            p->rightChild = n->leftChild;
+        }
+        else
+        {
+            p->rightChild = n->rightChild;
+        }
+        free(n);
 
+    }
+    else // Case #3: Node to delete has twp children
+    {
+        printf("Node to delete has two chilren, not implemented yet.\n");
+    }
 
 	// ---<SNIP>----
 }//delete()
