@@ -261,7 +261,7 @@ void delete (Node* p, Node *n)
     // Case #1: Node to delete has no children
     if((NULL == n->leftChild) && (NULL == n->rightChild))
     {
-        printf("Node to delete has no  children.\n");
+        printf("Node to delete has no children.\n");
         // Need to update parent to point to NULL
         if(isRightChild)
         {
@@ -273,10 +273,10 @@ void delete (Node* p, Node *n)
         }
         // delete trhe node
         free(n);
-    }
+    } // Case 2a: Node to delete has one child on the right
     else if(NULL == n->leftChild)
     {
-        printf("Node to delete has one  child on the right.\n");
+        printf("Node to delete has one child on the right.\n");
         // Node to delete has one child on the right
         if(isRightChild)
         {
@@ -287,7 +287,7 @@ void delete (Node* p, Node *n)
             p->leftChild = n->rightChild;
         }
         free(n);
-    }
+    } // Case 2b: Node to delete has one child on the left
     else if(NULL == n->rightChild)
     {
         printf("Node to delete has one child on the left.\n");
@@ -303,9 +303,8 @@ void delete (Node* p, Node *n)
         free(n);
 
     }
-    else
+    else // Case #3: Node to delete has twp children
     {
-        // There are two children
         printf("Node to delete has two chilren, not implemented yet.\n");
     }
 
