@@ -69,6 +69,12 @@ void printTree (Node* root)
 {
 	// assume printTree magically know the types in the tree node
 	printTreeExplanation();
+    // We might have an empty tree
+    if(NULL == root)
+    {
+        printf("{}");
+        return;
+    }
 	// start of this tree
 	printf("{");
 	// values in the root node (assuming value is pointing to an integer)

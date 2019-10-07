@@ -28,6 +28,10 @@ int main(void)
 	// Note: This implementation requires that tree be initialized with first
 	// node.
 
+	printf("Original Tree (should be empty): \n");
+	printTree(t->root);
+	printf("\n\n");
+
 	// Modified insert to accept the tree object
 	insert(10,&v1,t,t->root);
 	insert(3,&v1,t, t->root);
@@ -39,7 +43,7 @@ int main(void)
 	insert(17,&v1,t, t->root);
 	insert(16,&v1,t, t->root);
 
-	printf("Original Tree: \n");
+	printf("Original Tree (after multiple inserts): \n");
 	printTree(t->root);
 	printf("\n\n");
 
