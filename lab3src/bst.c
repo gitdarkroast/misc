@@ -29,26 +29,20 @@ Node *initNode (Key k, void *v)
 }//initNode()
 
 
-/*
+
 Tree *initTree(Key k, void *v)
 // Set up new tree. Allocates memory for Tree structure, then
 // calls initNode() to allocate first node.
 {
 	Tree* t = malloc(sizeof(Tree));
-	if (t != NULL)
-		t->root = initNode(k,v);
+	// For the optional question, all we want is to allocate some memory for the
+	// Tree.  We do not want to create a node.  To keep things simple we will not 
+	// adjust any of the function sigantures.  Basically ignoring the parameters.
+	// if (t != NULL)
+	//		t->root = initNode(k,v);
 	return t;
 }//initTree()
-*/
-Tree *initTree()
-// Set up new tree. Allocates memory for Tree structure.  Initially
-// it is an empty tree - no nodes
-{
-	Tree* t = malloc(sizeof(Tree));
-    // for this excercise we assume no memory allocation
-    // issue.  Otherwise we should check if t is valid.
-	return t;
-}//initTree()
+
 
 void printTreeExplanation (void)
 // Prints hint to reader what to expect on screen
@@ -121,11 +115,19 @@ Node *find (Key k, Node *root)
 
 
 
-int insert(Key k, void *v, Node *root)
+// int insert(Key k, void *v, Node *root)
+// Alternate implementation
+int insert(Key k, void *v, Tree *t, Node *root)
 // Function inserts a new node into the tree, with key k and value pointed to
 // by v. Parameter root points to root node of tree.
 {
 	int result = 0;
+	// The case when the tree is empty (NULL)
+	if (NULL == t->root) 
+	{
+			t->root = initNode(k,v);
+			return 1;
+	}
 	// this if statement can only be true with the first root (root of whole tree)
 	if (root == NULL)	{
 		Node *n = initNode(k,v);
@@ -141,7 +143,7 @@ int insert(Key k, void *v, Node *root)
 		// subtree, if it exists.
 		if (root->leftChild != NULL)
 			// there is a left subtree - insert it
-			result = insert(k, v, root->leftChild);
+			result = insert(k, v, t, root->leftChild);
 		else {
 			// new Node becomes the left subtree
 			Node *n = initNode(k,v);
@@ -153,7 +155,7 @@ int insert(Key k, void *v, Node *root)
 		// subtree, if it exists
 		if (root->rightChild != NULL)
 			// there is a right subtree - insert new node
-			result = insert(k,v,root->rightChild);
+			result = insert(k,v, t, root->rightChild);
 		else {
 			// no right subtree - new node becomes right subtree
 			Node*n = initNode(k,v);

@@ -23,21 +23,22 @@ int main(void)
 {
 	Node	*n = NULL;		// eliminates compiler warning
 	int v1 = 1;
-	// Tree *t = initTree (10,&v1);
-	Tree *t = initTree ();
+	Tree *t = initTree (10,&v1);
+	
 	// Note: This implementation requires that tree be initialized with first
 	// node.
-	insert(10,&v1,t->root);
-	
-	insert(3,&v1,t->root);
-	insert(1,&v1,t->root);
-	insert(7,&v1,t->root);
-	insert(20,&v1,t->root);
-	insert(15,&v1,t->root);
-	insert(18,&v1,t->root);
-	insert(17,&v1,t->root);
-	insert(16,&v1,t->root);
-	
+
+	// Modified insert to accept the tree object
+	insert(10,&v1,t,t->root);
+	insert(3,&v1,t, t->root);
+	insert(1,&v1,t, t->root);
+	insert(7,&v1,t, t->root);
+	insert(20,&v1,t, t->root);
+	insert(15,&v1,t, t->root);
+	insert(18,&v1,t, t->root);
+	insert(17,&v1,t, t->root);
+	insert(16,&v1,t, t->root);
+
 	printf("Original Tree: \n");
 	printTree(t->root);
 	printf("\n\n");

@@ -29,8 +29,8 @@ Node *initNode (Key k, void *v);
 
 // Create new tree by creating new node with key = k and value = v
 // and making it root 
-// Tree *initTree (Key k, void *v);
-Tree *initTree ();
+Tree *initTree (Key k, void *v);
+
 
 // Find node with key k in tree. Returns pointer to Node if found;
 // Returns NULL if not found
@@ -38,7 +38,9 @@ Node *find (Key k, Node *root);
 
 // Create new node with key=k, value=v and insert it into tree 
 // Returns 1 upon success, 0 failure 
-int insert (Key k, void *v, Node *root);
+// For the alternate implementation.  We will pass the tree object
+// int insert (Key k, void *v, Node *root);
+int insert (Key k, void *v, Tree *t, Node *root);
 
 // Print text representation of tree (starting at any Node)
 void printTree (Node* root);
