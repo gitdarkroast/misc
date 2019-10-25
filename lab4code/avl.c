@@ -172,7 +172,11 @@ int getBalanceFactor(Node* root)
 	int	hr = -1, hl = -1;		// Default values
 //---Your code goes here
 //---<SNIP>---
-
+    if(NULL != root)
+    {
+        hl = calcHeight(root->leftChild);
+        hr = calcHeight(root->rightChild);
+    }
 //---<SNIP>---
 	return hl - hr;
 }//getBalanceFactor()
@@ -189,8 +193,16 @@ int calcHeight(Node* root)
 //---hll - height of left subtree. In last line, 1 is added to the maximum
 //---of hll and hrl and that value is returned.
 //---<SNIP>---
-
+    if(NULL == root)
+    {
+        return -1;
+    }
+    // Get the height of the left sub-tree
+    hll = (NULL != root->leftChild) ? root->leftChild->height : -1;
+    // Get the height of the right sub-tree
+    hrl = (NULL != root->rightChild) ? root->rightChild->height : -1;
 //---<SNIP>---
+    // return the max of the sub-tree plus one for this node (root)
 	return maxint(hrl, hll) + 1;
 }//calcHeight();
 
