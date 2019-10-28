@@ -148,6 +148,19 @@ Node* rotateRight(Node* root)
 	printf("Rotate Right\n");
 //---Your code goes here
 //---<SNIP>---
+    Node* leftChild;
+    Node* rightGrandChild;
+
+    leftChild = root->leftChild;
+    rightGrandChild = (NULL != leftChild) ? leftChild->rightChild : NULL;
+
+    leftChild->rightChild = root;
+    leftChild->leftChild = rightGrandChild;
+
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    leftChild->height = maxint(calcHeight(leftChild->leftChild), calcHeight(leftChild->rightChild)) + 1;
+
+    root = leftChild;
 
 //---<SNIP>---
 	return root;
@@ -160,7 +173,15 @@ Node* rotateLeft(Node* root)
 	printf("Rotate Left\n");
 //---Your code goes here
 //---<SNIP>---
+    Node* rightChild;
+    Node* leftGrandChild;
 
+    rightChild = root->rightChild;
+    leftGrandChild = (NULL != rightChild) ? rightChild->leftChild : NULL;
+
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    rightChild->height = maxint(calcHeight(rightChild->leftChild), calcHeight(rightChild->rightChild)) + 1;
+    root = rightChild;
 //---<SNIP>---
 	return root;
 }//rotateLeft()
@@ -214,6 +235,31 @@ Node* rebalance(Node* root)
 	int bf = getBalanceFactor(root);
 //---Your code goes here
 //---<SNIP>---
+    int key = root->key;
+    Node* lc = root->leftChild;
+    Node* rc = root->rightChild;
+
+    if((bf > 1) && (key < lc->key))
+    {
+        return rotateRight(root);
+    }
+
+    if((bf < -1) && (key > rc->key))
+    {
+        return rotateLeft(root);
+    }
+
+    if((bf > 1) && (key > lc->key))
+    {
+        root->leftChild = rotateLeft(root->leftChild);
+        return rotateRight(root);
+    }
+
+    if((bf < -1) && (key < rc->key))
+    {
+        root->rightChild = rotateRight(root->rightChild);
+        return rotateLeft(root);
+    }
 
 //---<SNIP>---
 	return root;
