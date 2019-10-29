@@ -148,19 +148,18 @@ Node* rotateRight(Node* root)
 	printf("Rotate Right\n");
 //---Your code goes here
 //---<SNIP>---
-    Node* leftChild;
-    Node* rightGrandChild;
+    // Left child, right grandchild
+    Node* child = root->leftChild;
+    Node* grandChild = child->rightChild;
 
-    leftChild = root->leftChild;
-    rightGrandChild = (NULL != leftChild) ? leftChild->rightChild : NULL;
+    // Perform the rotation
+    child->rightChild   = root;
+    root->leftChild     = grandChild;
 
-    leftChild->rightChild = root;
-    leftChild->leftChild = rightGrandChild;
+    root->height = maxint( calcHeight(root->leftChild) , calcHeight(root->rightChild)) + 1;
+    child->height = maxint(calcHeight(child->leftChild), calcHeight(child->rightChild)) + 1;
 
-    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
-    leftChild->height = maxint(calcHeight(leftChild->leftChild), calcHeight(leftChild->rightChild)) + 1;
-
-    root = leftChild;
+    root = child;
 
 //---<SNIP>---
 	return root;
@@ -173,15 +172,18 @@ Node* rotateLeft(Node* root)
 	printf("Rotate Left\n");
 //---Your code goes here
 //---<SNIP>---
-    Node* rightChild;
-    Node* leftGrandChild;
+    // Right child, left grandchild
+    Node* child = root->rightChild;
+    Node* grandChild = child->leftChild;
 
-    rightChild = root->rightChild;
-    leftGrandChild = (NULL != rightChild) ? rightChild->leftChild : NULL;
+    // Perform the rotation
+    child->leftChild     = root;
+    root->rightChild     = grandChild;
 
-    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
-    rightChild->height = maxint(calcHeight(rightChild->leftChild), calcHeight(rightChild->rightChild)) + 1;
-    root = rightChild;
+    root->height = maxint( calcHeight(root->leftChild) , calcHeight(root->rightChild)) + 1;
+    child->height = maxint(calcHeight(child->leftChild), calcHeight(child->rightChild)) + 1;
+
+    root = child;
 //---<SNIP>---
 	return root;
 }//rotateLeft()
@@ -235,6 +237,7 @@ Node* rebalance(Node* root)
 	int bf = getBalanceFactor(root);
 //---Your code goes here
 //---<SNIP>---
+#ifdef BYPASS
     int key = root->key;
     Node* lc = root->leftChild;
     Node* rc = root->rightChild;
@@ -260,7 +263,7 @@ Node* rebalance(Node* root)
         root->rightChild = rotateRight(root->rightChild);
         return rotateLeft(root);
     }
-
+#endif
 //---<SNIP>---
 	return root;
 }//rebalance()
