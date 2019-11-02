@@ -148,19 +148,16 @@ Node* rotateRight(Node* root)
 	printf("Rotate Right\n");
 //---Your code goes here
 //---<SNIP>---
-    // Left child, right grandchild
-    Node* child = root->leftChild;
-    Node* grandChild = child->rightChild;
+    // Left of left
+    Node* temp = root->leftChild;
+    // Node* T2 = x->rightChild;
 
     // Perform the rotation
-    child->rightChild   = root;
-    root->leftChild     = grandChild;
-
-    root->height = maxint( calcHeight(root->leftChild) , calcHeight(root->rightChild)) + 1;
-    child->height = maxint(calcHeight(child->leftChild), calcHeight(child->rightChild)) + 1;
-
-    root = child;
-
+    root->leftChild = temp->rightChild;
+    temp->rightChild = root;
+    
+    //temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild));
+    root = temp;
 //---<SNIP>---
 	return root;
 }//rotateRight()
@@ -172,18 +169,15 @@ Node* rotateLeft(Node* root)
 	printf("Rotate Left\n");
 //---Your code goes here
 //---<SNIP>---
-    // Right child, left grandchild
-    Node* child = root->rightChild;
-    Node* grandChild = child->leftChild;
 
-    // Perform the rotation
-    child->leftChild     = root;
-    root->rightChild     = grandChild;
+    Node* temp = root->rightChild;
 
-    root->height = maxint( calcHeight(root->leftChild) , calcHeight(root->rightChild)) + 1;
-    child->height = maxint(calcHeight(child->leftChild), calcHeight(child->rightChild)) + 1;
-
-    root = child;
+    // Do the rotation
+    root->rightChild = temp->leftChild;
+    temp->leftChild = root;
+   
+    //temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild));
+    root = temp;
 //---<SNIP>---
 	return root;
 }//rotateLeft()
@@ -234,38 +228,51 @@ Node* rebalance(Node* root)
 // Check balance factor to see if balancing required (bf > 1 or bf < -1).
 // If balancing required, perform necessary rotations.
 {
-	int bf = getBalanceFactor(root);
-//---Your code goes here
-//---<SNIP>---
-#ifdef BYPASS
+    int bf = getBalanceFactor(root);
+    //---Your code goes here
+    //---<SNIP>---
+
     int key = root->key;
+    printf("Root->key: %d\n", key);
     Node* lc = root->leftChild;
     Node* rc = root->rightChild;
 
-    if((bf > 1) && (key < lc->key))
-    {
-        return rotateRight(root);
-    }
+    // If bf > 1 then tree in unbalanced on the left side
 
-    if((bf < -1) && (key > rc->key))
+    if ((bf > 1) && (key < lc->key))
     {
-        return rotateLeft(root);
+        if (key < lc->key)
+        {
+            // Left of left 
+            return rotateRight(root);
+        }
+        else
+        {
+            // Right of left
+            root->leftChild = rotateLeft(root->leftChild);
+            return rotateRight(root);
+        }
+        
     }
-
-    if((bf > 1) && (key > lc->key))
+    // unbalanced on the right side
+    if (bf < -1)
     {
-        root->leftChild = rotateLeft(root->leftChild);
-        return rotateRight(root);
+        if (key > rc->key)
+        {
+            // Right of right   
+            return rotateLeft(root);
+        }
+        else
+        {
+            // Left or right
+            root->rightChild = rotateRight(root->rightChild);
+            return rotateLeft(root);
+        }
+        
     }
-
-    if((bf < -1) && (key < rc->key))
-    {
-        root->rightChild = rotateRight(root->rightChild);
-        return rotateLeft(root);
-    }
-#endif
-//---<SNIP>---
-	return root;
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    //---<SNIP>---
+    return root;
 }//rebalance()
 
 
@@ -288,6 +295,7 @@ Node* insertNode(Key k, void *v, Node *root)
 		root->height = calcHeight(root);
 	}
 	// Note - ignored equal case.
+    // printf("root->key: %d, root->height: %d\n", root->key, root->height);
 	return rebalance(root);
 }//insertNode()
 

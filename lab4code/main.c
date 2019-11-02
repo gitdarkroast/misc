@@ -18,7 +18,7 @@
 
 int main(void)
 {
-	int		datavalues [10] = {10, 3, 1, 7, 20, 15, 18, 17, 16, 22 };
+    int		datavalues[10] = { 10, 3, 1, 7, 20, 15, 18, 17, 16, 22 }; 
 	int		v1 = 1;
 	int		dt;
 	Tree *t = initTree();
