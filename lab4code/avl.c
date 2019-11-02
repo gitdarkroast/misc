@@ -233,15 +233,14 @@ Node* rebalance(Node* root)
     //---<SNIP>---
 
     int key = root->key;
-    printf("Root->key: %d\n", key);
     Node* lc = root->leftChild;
     Node* rc = root->rightChild;
 
     // If bf > 1 then tree in unbalanced on the left side
 
-    if ((bf > 1) && (key < lc->key))
+    if (bf > 1)
     {
-        if (key < lc->key)
+        if (key > lc->key)
         {
             // Left of left 
             return rotateRight(root);
@@ -257,7 +256,7 @@ Node* rebalance(Node* root)
     // unbalanced on the right side
     if (bf < -1)
     {
-        if (key > rc->key)
+        if (key < rc->key)
         {
             // Right of right   
             return rotateLeft(root);
