@@ -156,7 +156,6 @@ Node* rotateRight(Node* root)
     root->leftChild = temp->rightChild;
     temp->rightChild = root;
     
-    //temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild));
     root = temp;
 //---<SNIP>---
 	return root;
@@ -176,7 +175,6 @@ Node* rotateLeft(Node* root)
     root->rightChild = temp->leftChild;
     temp->leftChild = root;
    
-    //temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild));
     root = temp;
 //---<SNIP>---
 	return root;
@@ -269,7 +267,8 @@ Node* rebalance(Node* root)
         }
         
     }
-    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    // Recalculate the height
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild));
     //---<SNIP>---
     return root;
 }//rebalance()
@@ -294,7 +293,6 @@ Node* insertNode(Key k, void *v, Node *root)
 		root->height = calcHeight(root);
 	}
 	// Note - ignored equal case.
-    // printf("root->key: %d, root->height: %d\n", root->key, root->height);
 	return rebalance(root);
 }//insertNode()
 
