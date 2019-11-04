@@ -149,13 +149,22 @@ Node* rotateRight(Node* root)
 //---Your code goes here
 //---<SNIP>---
     // Left of left
+    // temp pointer to the left child
     Node* temp = root->leftChild;
-    // Node* T2 = x->rightChild;
+ 
 
     // Perform the rotation
+    // Break the root left pointer and point to the child
+    // right pointer
     root->leftChild = temp->rightChild;
+    // child right pointer now points to the root
     temp->rightChild = root;
     
+    // Re-calculate the heights
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild)) + 1;
+
+    // Just because we are returning root
     root = temp;
 //---<SNIP>---
 	return root;
@@ -174,6 +183,10 @@ Node* rotateLeft(Node* root)
     // Do the rotation
     root->rightChild = temp->leftChild;
     temp->leftChild = root;
+
+    // Re-calculate the heights
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
+    temp->height = maxint(calcHeight(temp->leftChild), calcHeight(temp->rightChild)) + 1;
    
     root = temp;
 //---<SNIP>---
@@ -268,7 +281,7 @@ Node* rebalance(Node* root)
         
     }
     // Recalculate the height
-    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild));
+    root->height = maxint(calcHeight(root->leftChild), calcHeight(root->rightChild)) + 1;
     //---<SNIP>---
     return root;
 }//rebalance()
