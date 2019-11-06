@@ -51,7 +51,7 @@ long h(char* x)
     }
 	
 	// ---<SNIP>---
-	return sum;
+	return abs(sum);
 }//h()
 
 
@@ -96,6 +96,49 @@ void insert(HashTable *ht, char* x)
 	// ---<SNIP>---
 }//insert()
 
+int remove_key(HashTable* ht, char* x)
+{
+    int ret = 0;
+
+    int idx = hash(x, ht->size);
+
+    if (1 == find(ht->a[idx], x))
+    {
+        // We found the key
+         // 3 cases:
+        // 1 key is at the beginning
+        // 2 key is at the end
+        // 3 key is in the middle
+        Node* ptr = ht->a[idx]->head;
+        while (ptr != NULL) {
+            if (strcmp(ptr->value, x) == 0)
+            {
+                break;
+            }
+            ptr = ptr->next;
+        }
+        // ptr now points to the item we want to delete
+        if (ht->a[idx]->head == ptr)
+        {
+            removeFront(ht->a[idx]);
+        }
+        else if (ht->a[idx]->tail == ptr)
+        {
+            removeEnd(ht->a[idx]);
+        }
+        else
+        {
+            // somewhere in the middle
+            ptr->next->prev = ptr->prev;
+            ptr->prev->next = ptr->next;
+        }
+        // free(ptr);
+        ret = 1;
+    }   
+
+    return ret;
+}//remove_key()
+
 
 int findInTable(HashTable *ht, char* x)
 {
@@ -136,6 +179,8 @@ int main() {
 	// Generate a set of random strings (given the way this works, everyone
 	// gets the same set of random strings!) insert each into the hash table
 	// and then print the table.
+
+    /* Comment this section out.  RFeplace with reading from file
 	for(i=0;i<100;i++){
 		int x = rand()%5+1;
 		char *p = malloc(sizeof(char)*x);
@@ -145,7 +190,85 @@ int main() {
 		p[j]='\0';
 		insert(h,p);
 	}
+    */
+    FILE* fptr;
+    char* fname = "c:\\workspace\\words2.txt";
+
+    // Open file in read only mode.
+    fptr = fopen(fname, "r");
+    if (NULL == fptr)
+    {
+        printf("Unable to open file: %s", fname);
+        exit(1);
+    }
+
+
+    char word[256]; // buffer to hold the word
+
+    // Get string until we reach end of file
+    while (NULL != fgets(word, 256, fptr))
+    {
+        // fgets also reds the newline character, lets get rid of it
+        word[strcspn(word, "\n")] = '\0';
+        // now insert the word in the hash table.
+        insert(h, word);
+    }
+    
+    fclose(fptr);
+
 
 	printTable(h);
+
+    char* key = "eee";
+    // eee is one key
+    if (remove_key(h, key))
+    {
+        printf("Key: %s, removed successfully\n", key);
+    }
+    else
+    {
+        printf("Key: %s, not found\n", key);
+    }
+    // knife is in words2 middle word - hash id 65
+    key = "knife";
+    if (remove_key(h, key))
+    {
+        printf("Key: %s, removed successfully\n", key);
+    }
+    else
+    {
+        printf("Key: %s, not found\n", key);
+    }
+    // goodbye is in words2 end word - hash id 43
+    key = "goodbye";
+    if (remove_key(h, key))
+    {
+        printf("Key: %s, removed successfully\n", key);
+    }
+    else
+    {
+        printf("Key: %s, not found\n", key);
+    }
+    // omnibus is in words2 first word - hash id 49
+    key = "omnibus";
+    if (remove_key(h, key))
+    {
+        printf("Key: %s, removed successfully\n", key);
+    }
+    else
+    {
+        printf("Key: %s, not found\n", key);
+    }
+    // IDontExist is in neither file
+    key = "IDontExist";
+    if (remove_key(h, key))
+    {
+        printf("Key: %s, removed successfully\n", key);
+    }
+    else
+    {
+        printf("Key: %s, not found\n", key);
+    }
+    printTable(h);
 	return 0;
 }
