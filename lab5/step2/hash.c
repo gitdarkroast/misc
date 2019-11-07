@@ -230,7 +230,9 @@ int findInTable(HashTable *ht, char* x)
     int hcode = hash(x, ht->size);
 
     // Using find(...) determine if it exists in the hash code location
-    return find(*(ht[hcode].a), x);
+    // We need to provide the poin
+    // return find(*(ht[hcode].a), x);
+    return find(ht->a[hcode], x);
 
 
 	// ---<SNIP>---	
@@ -301,6 +303,14 @@ int main() {
 	printTable(h);
 
     char* key = "eee";
+    if (findInTable(h, key))
+    {
+        printf("Key: %s found\n", key);
+    }
+    else
+    {
+        printf("Key: %s not found\n", key);
+    }
     // eee is one key
     if (remove_key(h, key))
     {
@@ -312,6 +322,14 @@ int main() {
     }
     // knife is in words2 middle word - hash id 65
     key = "knife";
+    if (findInTable(h, key))
+    {
+        printf("Key: %s found\n", key);
+    }
+    else
+    {
+        printf("Key: %s not found\n", key);
+    }
     if (remove_key(h, key))
     {
         printf("Key: %s, removed successfully\n", key);
@@ -342,6 +360,14 @@ int main() {
     }
     // IDontExist is in neither file
     key = "IDontExist";
+    if (findInTable(h, key))
+    {
+        printf("Key: %s found\n", key);
+    }
+    else
+    {
+        printf("Key: %s not found\n", key);
+    }
     if (remove_key(h, key))
     {
         printf("Key: %s, removed successfully\n", key);
