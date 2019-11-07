@@ -204,10 +204,16 @@ int remove_key(HashTable* ht, char* x)
         {
             // somewhere in the middle
             // perform a tricky pointer swap.
+            /*
+            ptr is point to the node we want to remove, so:
+            1. make the node AFTER ptr point to the node BEFORE ptr
+            2. make the node BEFORE ptr point to the node AFTER ptr
+            */
             ptr->next->prev = ptr->prev;
             ptr->prev->next = ptr->next;
+            free(ptr);
         }
-        //free(ptr);
+      
         ret = 1;
     }   
 
