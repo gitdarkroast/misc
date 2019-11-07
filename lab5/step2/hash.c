@@ -63,7 +63,7 @@ double loadFactor(HashTable* ht)
 	for(i=0; i<ht->size; i++)	{
 		if (isEmpty(ht->a[i])==0)	nonempty++;
 		}
-	return nonempty/ht->size*100;
+	return nonempty / ht->size * 100;
 }//loadFactor()
 
 
@@ -75,23 +75,97 @@ int hash(char* x, int size)
 	return h(x) % size;
 }
 
+// forward declaration
+void insert(HashTable* ht, char* x);
 
-void insert(HashTable *ht, char* x)
+// Helper function to re-size the hash table to the given size
+HashTable* resizeHashTable(HashTable* ht, int size)
+{
+    HashTable* newHT = initHashTable(size);
+    printf("Resizing hash table, size: %d\n", size);
+
+    // Now we have to copy everything from the old hash table
+    // to the new one...
+    for (int i = 0; i < ht->size; i++)
+    {
+        // Point to the head of the hash entry
+        Node* ll = ht->a[i]->head;
+        // Only worry about copying if something is there
+        if (NULL != ll)
+        {
+            // Go through all the linked nodes
+            for (Node* ptr = ll; NULL != ptr; ptr = ptr->next)
+            {
+                // We need to re-calculate the hash
+                int idx = hash(ptr->value, size);
+                if (NULL == ptr)
+                {
+                    break;
+                }
+                // Insert into the new hash table
+                addFront(newHT->a[idx], ptr->value);
+            }
+        }
+    }
+    return newHT;
+}
+
+// Clean up a hash table
+void destoryHashTable(HashTable* ht)
+{
+    for (int i = 0; i < ht->size; i++)
+    {
+        Node* ll = ht->a[i]->head;
+        Node* next;
+        if (NULL != ll)
+        {
+            for (Node* n = ll; NULL != n; n = next)
+            {
+                next = n->next;
+                free(n->value);
+                free(n);
+            }
+        }
+    }
+    free(ht->a);
+}
+
+// We need to pass a double pointer object since we need to modify the object that exist in the
+// calling function.
+void insert(HashTable **ht, char* x)
 {
 	//#########################COMPLETE THIS FUNCTION##########################
 	// ---<SNIP>---
-    int size = ht->size;
+
+    // (*ht) means we are derefencing the object - meaning accessing the object that we are pointing to from the calling function.
+    int size = (*ht)->size;
     int idx = hash(x, size);
 
-    if (1 == find(ht->a[idx], x))
+    if (1 == find((*ht)->a[idx], x))
     {
         // we have a collision
-        ht->collisions++;
+        (*ht)->collisions++;
     }
     else
     {
-        addFront(ht->a[idx], x);
+        addFront((*ht)->a[idx], x);
     }
+
+    // Now we check the load factor
+
+    double loadFactorThreshold = 60.0;
+    double currentLoadFactor = loadFactor((*ht));
+    if (currentLoadFactor >= loadFactorThreshold)
+    {
+        
+        HashTable* newHT = resizeHashTable((*ht), 2 * (*ht)->size);
+
+        HashTable* temp = *ht;   // temp hash pointer - point to the original object
+        *ht = newHT; // The original ht now points to the new one
+        destoryHashTable(temp);  // cleanup the memory of the original hash table
+
+    }
+
     
 	// ---<SNIP>---
 }//insert()
@@ -129,10 +203,11 @@ int remove_key(HashTable* ht, char* x)
         else
         {
             // somewhere in the middle
+            // perform a tricky pointer swap.
             ptr->next->prev = ptr->prev;
             ptr->prev->next = ptr->next;
         }
-        // free(ptr);
+        //free(ptr);
         ret = 1;
     }   
 
@@ -192,7 +267,7 @@ int main() {
 	}
     */
     FILE* fptr;
-    char* fname = "c:\\workspace\\words2.txt";
+    char* fname = "c:\\workspace\\words3.txt";
 
     // Open file in read only mode.
     fptr = fopen(fname, "r");
@@ -211,7 +286,7 @@ int main() {
         // fgets also reds the newline character, lets get rid of it
         word[strcspn(word, "\n")] = '\0';
         // now insert the word in the hash table.
-        insert(h, word);
+        insert(&h, word);
     }
     
     fclose(fptr);
