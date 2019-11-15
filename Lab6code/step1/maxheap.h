@@ -55,18 +55,32 @@ void swapH(int *parray, int i, int j)
 #define	RITE(i)	(2*i +2)
 #define PARENT(i)	((i-1)/2)
 
-void reheapUp(Heap* heap, int index)
+void reheapUpMAX(Heap* heap, int index)
 {
 	if (index > 0)	{
 		int parent_index = PARENT(index);
 		if (heap->a[index] > heap->a[parent_index])	{
 			swapH(heap->a, index, parent_index);
-			reheapUp(heap, parent_index);
+			reheapUpMAX(heap, parent_index);
 			}
 		}
 	return;
 }//reheapUp();
 
+void reheapUp(Heap* heap, int index)
+{
+    if (index <= 0)
+        return;
+    else {
+        int parent_index = PARENT(index);
+        if (heap->a[index] < heap->a[parent_index])
+            swapH(heap->a, index, parent_index);
+        else
+            return;
+        reheapUp(heap, parent_index);
+    }
+    return;
+}//reheapUp()
 
 long reheapDown(Heap* heap, int i)
 {

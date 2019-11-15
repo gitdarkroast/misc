@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include "maxheap.h"
+#include "minheap.h"
 
 
 void print(int *a, int n)
@@ -124,27 +124,32 @@ long quickSort(int* a, int left, int right) {
 //*******************Heap Sort**************************
 
 long heapSort(int* a, int n) {
-	Heap* h = heapify2(a, n);
+	Heap* h = heapify(a, n);
 	long swaps = 0;
 	int i;
 	for (i = n - 1; i > 0; i--) {
 		swap(&h->a[0], &h->a[i]);
 		h->last--;
-		reheapDown(h, 0);
+		swaps += reheapDown(h, 0);
 	}
 	return swaps;
 }
 
 //*******************Merge Sort**************************
 
-void merge(int*a, int start, int middle, int end, int*b) {
+long merge(int*a, int start, int middle, int end, int*b) {
 	int i;
 	int j = start;
 	int k = middle + 1;
+    int swaps = 0;
+    // printf("merge: start = %d, middle = %d, end = %d\n", start, middle, end);
 	for (i = start; j <= middle && k <= end; i++) {
-		if (a[j] < a[k]) {
+        // ascending: a[j] < a[k]
+        // descending: a[j] > a[k]
+		if (a[j] > a[k]) {
 			b[i] = a[j];
 			j++;
+            swaps++;
 		} else {
 			b[i] = a[k];
 			k++;
@@ -158,28 +163,33 @@ void merge(int*a, int start, int middle, int end, int*b) {
 
 	for (i = start; i <= end; i++)
 		a[i] = b[i];
+    return swaps;
 }
 
 //*******************Merge Sort**************************
 
-void mergeSortR(int* a, int start, int end, int* b) {
+long mergeSortR(int* a, int start, int end, int* b) {
 	int		middle;
+    int swaps = 0;
 	if (start >= end) return;
 
 	middle = start + (end - start) / 2;
 	mergeSortR(a, start, middle, b);
 	mergeSortR(a, middle + 1, end, b);
-	merge(a, start, middle, end, b);
+	swaps = merge(a, start, middle, end, b);
+    
+    return swaps;
 }
 
 long mergeSort(int* a, int n) {
 	int* b = malloc(sizeof(int) * n);
 	int i;
+    int swaps = 0;
 	for (i = 0; i < n; i++) {
 		b[i] = a[i];
 	}
-	mergeSortR(a, 0, n - 1, b);
-	return 0;
+	swaps = mergeSortR(a, 0, n - 1, b);
+	return swaps;
 }
 //*******************Bucket Sort**************************
 
@@ -201,30 +211,66 @@ void bucketSort(int *a, int n, int b) {
 
 //*******************Radix Sort**************************
 
-long radixSort(int *a, int n, int p) {
+long radixSortOrig(int *a, int n, int p) {
 	int i, j, k;
-	for (k = 0; k < p; k++) {
-		int count[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		int* tmp = malloc(sizeof(int) * n);
-		int* offset = malloc(sizeof(int) * 10);
-		for (i = 0; i < n; i++)
-			count[(a[i] / (int) pow(10, k)) % 10]++;
-		offset[0] = 0;
-		for (i = 1; i < 10; i++) {
-			offset[i] = 0;
-			for (j = 0; j < i; j++) {
-				offset[i] += count[j];
-			}
-		}
+    for (k = 0; k < p; ++k)
+    {
+        int count[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        // int* tmp = malloc(sizeof(int) * n);
+        // int* offset = malloc(sizeof(int) * 10);
+        int tmp[] = { 0, 0, 0, 0, 0, 0, 0 };
+        int offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        for (i = 0; i < n; i++)
+        {
+            int cidx = (a[i] / (int)pow(10, k)) % 10;
+            count[cidx]++;
+        }
 
-		for (i = 0; i < n; i++) {
-			tmp[offset[(a[i] / (int) pow(10, k)) % 10]++] = a[i];
-		}
-		for (i = 0; i < n; i++) {
-			a[i] = tmp[i];
-			}
-		}
+        offset[0] = 0;
+        
+        for (i = 1; i < 10; i++)
+        {
+            offset[i] = 0;
+            for (j = 0; j < i; j++)
+            {
+                offset[i] += count[j];
+            }
+        }
+        
+        // for (i = 0; i < n; i++)
+        for (i = (n-1); i >= 0; i--)
+        {
+            int idx = offset[(a[i] / (int)pow(10, k)) % 10]++;
+            tmp[idx] = a[i];
+        }
+        for (i = 0; i < n; i++)
+        {
+            a[i] = tmp[i];
+        }
+    }
 	return 0;
+}
+
+long radixSort(int* a, int n, int p)
+{
+    int i, m = 0, exp = 1, b[10];
+    for (i = 0; i < n; i++)
+        if (a[i] > m)
+            m = a[i];
+    while (m / exp > 0)
+    {
+        int bucket[10] = { 0 };
+        for (i = 0; i < n; i++)
+            bucket[9 - a[i] / exp % 10]++;         // changed this line
+        for (i = 1; i < 10; i++)
+            bucket[i] += bucket[i - 1];
+        for (i = n - 1; i >= 0; i--)
+            b[--bucket[9 - a[i] / exp % 10]] = a[i]; // changed this line
+        for (i = 0; i < n; i++) {
+            a[i] = b[i];                       // changed this line
+        }
+        exp *= 10;
+    }
 }
 
 
