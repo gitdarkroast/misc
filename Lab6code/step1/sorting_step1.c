@@ -82,12 +82,13 @@ long bubbleSort(int* array, int n) {
 
 //*******************Quick Sort**************************
 
-int partition(int* a, int left, int right, long* swaps) {
+int partition(int* a, int left, int right, int* swaps) {
 	int i = left;
 	int j = right - 1;
 	int pivot_index = left + (right - left) / 2;
 	int pivot = a[pivot_index];
 	swap(&a[right], &a[pivot_index]);
+    (*swaps)++;
 	while (i < j) {
         // ascending:
         // while (a[i] < pivot) i++;
@@ -99,6 +100,7 @@ int partition(int* a, int left, int right, long* swaps) {
 		while (a[j] < pivot) j--;
 		if (i <= j) {
 			swap(&a[i], &a[j]);
+            (*swaps)++;
 			i++;
 			j--;
 		}
@@ -109,12 +111,14 @@ int partition(int* a, int left, int right, long* swaps) {
 }
 
 
-long quickSort(int* a, int left, int right) {
+int  quickSort(int* a, int left, int right) {
 	long swaps = 0;
 	if (right - left > 2) {
 		int pivot = partition(a, left, right, &swaps);
-        swaps += quickSort(a, left, pivot - 1) + 1;
-        swaps += quickSort(a, pivot + 1, right) + 1;
+        // quickSort(a, left, pivot - 1);
+        // quickSort(a, pivot + 1, right);
+        swaps += quickSort(a, left, pivot - 1);
+        swaps += quickSort(a, pivot + 1, right);
 	} else {
 		 insertionSortQ(a, left, right);
 	}
