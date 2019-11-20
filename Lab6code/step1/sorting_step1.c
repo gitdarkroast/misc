@@ -146,7 +146,7 @@ long merge(int*a, int start, int middle, int end, int*b) {
 	int j = start;
 	int k = middle + 1;
     int swaps = 0;
-    // printf("merge: start = %d, middle = %d, end = %d\n", start, middle, end);
+ 
 	for (i = start; j <= middle && k <= end; i++) {
         // ascending: a[j] < a[k]
         // descending: a[j] > a[k]
@@ -215,38 +215,40 @@ void bucketSort(int *a, int n, int b) {
 
 //*******************Radix Sort**************************
 
-long radixSortOrig(int *a, int n, int p) {
+long radixSort(int *a, int n, int p) {
 	int i, j, k;
-    for (k = 0; k < p; ++k)
+    for (k = 0; k < p; k++)
     {
         int count[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        // int* tmp = malloc(sizeof(int) * n);
-        // int* offset = malloc(sizeof(int) * 10);
-        int tmp[] = { 0, 0, 0, 0, 0, 0, 0 };
-        int offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        int* tmp = malloc(sizeof(int) * n);
+        int* offset = malloc(sizeof(int) * 10); 
+        
+        // Determine the number of each digits
         for (i = 0; i < n; i++)
         {
-            int cidx = (a[i] / (int)pow(10, k)) % 10;
-            count[cidx]++;
+            // Since we are descending we go in the reverse
+            count[9 - a[i] / (int)pow(10, k) % 10]++;
         }
-
+   
         offset[0] = 0;
-        
+
+
         for (i = 1; i < 10; i++)
         {
-            offset[i] = 0;
-            for (j = 0; j < i; j++)
-            {
-                offset[i] += count[j];
-            }
+            count[i] += count[i - 1];
         }
+        
+
         
         // for (i = 0; i < n; i++)
         for (i = (n-1); i >= 0; i--)
         {
-            int idx = offset[(a[i] / (int)pow(10, k)) % 10]++;
-            tmp[idx] = a[i];
+            int idx = --count[9 - (a[i] / (int)pow(10, k)) % 10];
+            int x = a[i];
+            tmp[idx] = x;
         }
+
+ 
         for (i = 0; i < n; i++)
         {
             a[i] = tmp[i];
@@ -255,7 +257,7 @@ long radixSortOrig(int *a, int n, int p) {
 	return 0;
 }
 
-long radixSort(int* a, int n, int p)
+long radixSortNew(int* a, int n, int p)
 {
     int i, m = 0, exp = 1, b[10];
     for (i = 0; i < n; i++)
@@ -265,14 +267,16 @@ long radixSort(int* a, int n, int p)
     {
         int bucket[10] = { 0 };
         for (i = 0; i < n; i++)
-            bucket[9 - a[i] / exp % 10]++;         // changed this line
+            bucket[9 - a[i] / exp % 10]++;         
         for (i = 1; i < 10; i++)
             bucket[i] += bucket[i - 1];
         for (i = n - 1; i >= 0; i--)
-            b[--bucket[9 - a[i] / exp % 10]] = a[i]; // changed this line
+            b[--bucket[9 - a[i] / exp % 10]] = a[i]; 
         for (i = 0; i < n; i++) {
-            a[i] = b[i];                       // changed this line
+            a[i] = b[i];                       
         }
+        printf("exp: %d, bucket array:\n", exp);
+        print(bucket, 10);
         exp *= 10;
     }
 }
