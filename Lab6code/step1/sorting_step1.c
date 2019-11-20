@@ -221,64 +221,33 @@ long radixSort(int *a, int n, int p) {
     {
         int count[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int* tmp = malloc(sizeof(int) * n);
-        int* offset = malloc(sizeof(int) * 10); 
-        
+  
         // Determine the number of each digits
         for (i = 0; i < n; i++)
         {
             // Since we are descending we go in the reverse
             count[9 - a[i] / (int)pow(10, k) % 10]++;
         }
-   
-        offset[0] = 0;
-
-
+ 
         for (i = 1; i < 10; i++)
         {
             count[i] += count[i - 1];
         }
         
 
-        
-        // for (i = 0; i < n; i++)
         for (i = (n-1); i >= 0; i--)
         {
+            // This helps debugging.
             int idx = --count[9 - (a[i] / (int)pow(10, k)) % 10];
-            int x = a[i];
-            tmp[idx] = x;
+            tmp[idx] = a[i];
         }
 
- 
-        for (i = 0; i < n; i++)
+         for (i = 0; i < n; i++)
         {
             a[i] = tmp[i];
         }
     }
 	return 0;
-}
-
-long radixSortNew(int* a, int n, int p)
-{
-    int i, m = 0, exp = 1, b[10];
-    for (i = 0; i < n; i++)
-        if (a[i] > m)
-            m = a[i];
-    while (m / exp > 0)
-    {
-        int bucket[10] = { 0 };
-        for (i = 0; i < n; i++)
-            bucket[9 - a[i] / exp % 10]++;         
-        for (i = 1; i < 10; i++)
-            bucket[i] += bucket[i - 1];
-        for (i = n - 1; i >= 0; i--)
-            b[--bucket[9 - a[i] / exp % 10]] = a[i]; 
-        for (i = 0; i < n; i++) {
-            a[i] = b[i];                       
-        }
-        printf("exp: %d, bucket array:\n", exp);
-        print(bucket, 10);
-        exp *= 10;
-    }
 }
 
 
